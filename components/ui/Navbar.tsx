@@ -10,13 +10,13 @@ export const Navbar = () => {
                     <MenuOutlined/>
                 </IconButton>
                 <NextLink href="/" passHref>
-                    <Link>
+                    <Link className="link">
                         <Typography variant='h6' color='white'>CookieMaster</Typography>
                     </Link>
                 </NextLink>
             <div style={{flex: 1}}/>
                 <NextLink href="/theme-changer" passHref>
-                    <Link>
+                    <Link className="link">
                         <Typography variant='h6' color='white'>Cambiar Tema</Typography>
                     </Link>
                 </NextLink>
