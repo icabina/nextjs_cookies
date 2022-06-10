@@ -1,11 +1,19 @@
 import React, { ChangeEvent, FC, useEffect, useState } from 'react'
-import { Card, CardContent, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
+import { Button, Card, CardContent, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { Layout } from '../components/layouts'
 import Cookies from 'js-cookie';
+import { GetServerSideProps } from 'next'
+import axios from 'axios';
 
-const ThemeChanger:FC = (props) => {
 
-    const[currentTheme, setCurrentTheme] = useState('custom')
+
+interface Props{
+    theme: string;
+}
+
+const ThemeChanger:FC<Props> = ({theme}) => {
+
+    const[currentTheme, setCurrentTheme] = useState(theme)
 
 
     const onThemeChange =(e:ChangeEvent<HTMLInputElement>) => {
@@ -17,8 +25,14 @@ const ThemeChanger:FC = (props) => {
         Cookies.set('theme', selectedTheme)
     }
 
+    const onClick = async() =>{
+        const {data} = await axios.get('/api/hello')
+        console.log({data})
+    }
+
 useEffect(()=>{
     console.log('localStorage: ', localStorage.getItem('theme'))
+    console.log('Cookies: ', Cookies.get('theme'))
 },[])
 
   return (
@@ -35,6 +49,7 @@ useEffect(()=>{
                         <FormControlLabel value="custom" control={<Radio/>} label="custom" />
                     </RadioGroup>
                 </FormControl>
+                <Button onClick={onClick}>Solicitud</Button>
             </CardContent>
         </Card>
     </Layout>
@@ -45,16 +60,15 @@ useEffect(()=>{
 
 // You should use getServerSideProps when:
 // - Only if you need to pre-render a page whose data must be fetched at request time
-import { GetServerSideProps } from 'next'
 
 export const getServerSideProps: GetServerSideProps = async ({req}) => {
 
     // const cookies = req.cookies
     const {theme = 'light', name='No name'} = req.cookies;
-
+    const validThemes = ['light', 'dark', 'custom']
     return {
         props: {
-            theme: theme,
+            theme: validThemes.includes(theme) ? theme : 'dark',
             mame: name
         }
     }
